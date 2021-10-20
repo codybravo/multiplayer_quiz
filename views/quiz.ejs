@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+      <meta charset="UTF-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link rel="stylesheet" type="text/css" href="/css/quiz.css"/>
+      <!-- <script src="/socket.io/socket.io.js"></script> -->
+      <title>Quiz</title>
+</head>
+<body>
+    <div class="container">
+      <form action="/quiz/<%= ides %>/<%= user.user %>/<%= nn-1 %>" method="POST" accept-charset="utf-8">
+      <div class="question">
+        <div>
+          <b>Q. <%= question.Q %></b>
+        </div>
+        <br>
+        <div id="options"> 
+          <label class="options"><%= question.a %>
+            <input type="radio" name="radio" value="<%= question.a %>"> 
+            <span class="checkmark"></span> 
+          </label> 
+          <label class="options"><%= question.b %>
+            <input type="radio" name="radio" value="<%= question.b %>"> 
+            <span class="checkmark"></span> 
+          </label> 
+          <label class="options"><%= question.c %>
+            <input type="radio" name="radio" value="<%= question.c %>"> 
+            <span class="checkmark"></span> 
+          </label> 
+          <label class="options"><%= question.d %>
+            <input type="radio" name="radio" value="<%= question.d %>"> 
+            <span class="checkmark"></span> 
+          </label> 
+        </div>
+      </div>
+      <div>
+          <div> 
+          <a id="next" href='/quiz/<%= nextquesid %>/<%= user.user %>/<%= nn %>'>
+            <button id="next_btn" class="btn-success">Next
+            </button>
+          </a>
+          </div>
+      </div>
+      </form>
+    </div>
+<!-- <script>
+  const next_click = document.getElementById('next');
+  const next_btn = document.getElementById('next_btn')
+  const input = document.getElementsByTagName('input');
+  const option = document.getElementsByTagName('label');
+  
+  function findRadioValue(){
+    
+    for(i = 0; i < input.length; i++) { 
+      if(input[i].type="radio"){
+        if(input[i].checked){
+          return option[i].innerText
+        }
+      }
+    }
+  }
+  
+ 
+  next_click.addEventListener('click',(event) => {
+    //console.log("done")
+    //let temp = findRadioValue();
+    //window.alert(temp);
+    //event.preventDefault();
+  })
+ 
+  
+</script> -->
+        
+</body>
+</html>

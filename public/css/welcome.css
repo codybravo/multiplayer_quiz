@@ -1,0 +1,12 @@
+body{
+      background-color: #333
+}
+.user-input{
+      border: 3px solid #555;
+      background-color: #3CBC8D;
+      color: white;
+}
+.main-div{
+      text-align: center;
+}
+

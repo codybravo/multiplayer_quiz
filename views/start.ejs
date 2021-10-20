@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="/css/start.css"/>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      var socket = io();
+    </script>
+    <title>Start</title>
+</head>
+<body>
+  <div>
+    <ul>
+      <a class="quiz-link" href="/quiz">
+        <li>Start</li>
+      </a>
+      <a class="quiz-link" href="/logout">
+        <li>Logout</li>
+      </a>
+    </ul>
+  </div>
+  <div>
+    <h1>Start Quiz</h1>
+    <h2 id="username"><%= user.user %></h2>
+  </div>
+  <div>
+    <div href="/start" id="create_room" class="box">
+      <h3>Create Room</h3>
+    </div>
+    <br>
+    <div id="rooms">
+      <h2>lets wait</h2>
+      <% if (usrlist.length) { %>
+        <% for(let i=0;i<usrlist.length;i++) { %>
+          <h1><%= usrlist[i] %> waiting</h1>
+        <% } %>
+      <% } %>
+    </div>
+  </div>
+  </body>
+  
+ 
+  <script>
+    const username = document.getElementById("username");
+    const room = document.getElementById("create_room");
+    const rooms = document.getElementById("rooms");
+    
+    
+    room.addEventListener("click",(e) => {
+      socket.emit('clientToServer',{
+        username : username.innerHTML
+      })
+    })
+    socket.on("redirect",function(data){
+      if(username.innerText === data[0] || username.innerText === data[1]){
+      window.location = "/quiz";
+      }
+    })
+    socket.on('serverToClient',function(data){
+      //window.alert(data.userArray);
+      // console.log(data);
+      // newRoom(data)
+      // rooms.innerHTML += `<a class="quiz-link" href="/quiz" ><div class="box"><br><br><h3>${data.userArray} is waiting</h3></div></a>`;
+    window.location.reload()
+    })
+    socket.on('serverMsg',function(data){
+      window.alert(data)
+    })
+
+    /* socket.on('',function(data){
+      waiting.innerHTML = `<b>${data.user1} is Waiting</b>`;
+      userone.innerHTML = "____"
+      usertwo.innerHTML = "____"
+    })
+    socket.on('start',function(data){
+      userone.innerHTML = `<b>${data.user1}</b>`
+      usertwo.innerHTML = `<b>${data.user2}</b>`
+      waiting.innerHTML = `No One is Active`
+    }) */
+    
+  </script>
+
+  
+</body>
+</html>

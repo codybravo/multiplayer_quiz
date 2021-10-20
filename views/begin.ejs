@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <<meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="/css/start.css" />
+    <title>Begin</title>
+</head>
+
+<body>
+  <div>
+    <ul>
+      <a id="start-quiz" class="quiz-link" href="/quiz/<%= fquesid %>/<%= user.user %>/0">
+        <li>Start</li>
+      </a>
+      <a class="quiz-link" href="/logout">
+        <li>Logout</li>
+      </a>
+    </ul>
+    <h1><%= user.user %></h1>
+  </div>
+  <script>
+    const start = document.getElementById('start-quiz');
+    setTimeout(function(){ 
+      start.click(); 
+      
+    }, 3000);
+  </script>
+</body>
+
+</html>
