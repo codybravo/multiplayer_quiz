@@ -330,13 +330,23 @@ app.post("/quiz/:id/:user/:n",async (req,res) => {
 
 app.get('/quiz/wait/:user',(req,res) => {
   const user = req.params.user;
-  res.render('waiting',{user: user})
+  for(let i=0; i<questionObject.length; i++){
+    if(questionObject[i][user]){
+       if(questionObject[i].submit === 1){
+         // res.redirect(`/quiz/wait/${para_user}`)
+         res.render('waiting',{user: user})
+       }else if(questionObject[i].submit === 2){
+         res.redirect(`/quiz/score/${user}`)
+       }
+    }
+  }
 })
 
 app.get('/quiz/score/:user',(req,res) => {
   const user = req.params.user;
   var user_sc1 = "";
   var user_sc2 = "";
+  var win = "";
   var index_sc = 0;
   for(let i=0; i<questionObject.length; i++){
     if(questionObject[i][user]){
@@ -351,7 +361,15 @@ app.get('/quiz/score/:user',(req,res) => {
     }
     break
   }
+  if(questionObject[index_sc][user_sc1][1] > questionObject[index_sc][user_sc2][1]){
+    win = user_sc1;
+  }else{
+    win = user_sc2;
+  }
+  
   console.log(questionObject[index_sc][user_sc1],"---------->>>>>")
-  res.render('score',{user1: [user_sc1,questionObject[index_sc][user_sc1][1]], user2: [user_sc2,questionObject[index_sc][user_sc2][1]]})
+  res.render('score',{user1: [user_sc1,questionObject[index_sc][user_sc1][1]], user2: [user_sc2,questionObject[index_sc][user_sc2][1]],
+    winner: win
+  })
 })
 
