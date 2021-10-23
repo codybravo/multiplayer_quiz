@@ -39,6 +39,7 @@ function extractAnswer(list){
 
 
 function answerValidation(){
+  var points = 0;
   for(let i=0; i<5; i++){
     if(qlist[i].answer === answerlist[i].radio){
       points += 10;
@@ -62,21 +63,7 @@ function objCheck(room,user){
   }
 }
 
-function aQno(){
-    if(qno === 5){
-      qno = 0;
-    }
-  return qno
-  qno++;
-}
 
-function bQno(){
-  if(qno === 4){
-    return 0
-  }else{
-    return qno + 0
-  }
-}
 
 app.use(bodyParser.json());
 app.use(express.json());
@@ -114,7 +101,7 @@ io.on('connection',(socket) => {
       var roomNo = Math.round(clientNo/2);
       socket.join(roomNo);
       if(user_array.length === 2){
-        console.log(user_array)
+        // console.log(user_array)
         questionObject.push({
               roomno:roomNo,
               usr1:user_array[0],
@@ -124,7 +111,7 @@ io.on('connection',(socket) => {
         .then(result => {
           qlist = result.sort(() => Math.random() - Math.random()).slice(0, 5);
           let temp = extractAnswer(qlist)
-          console.log("temp=>",temp)
+          // console.log("temp=>",temp)
           let room = new Room({ roomno: roomNo, user1: user_array[0], user2: user_array[1], answer_list: temp})
           room.save();
           //let tempObj = objCheck(roomNo,user1)
@@ -139,10 +126,9 @@ io.on('connection',(socket) => {
           }
         })
         
-      console.log("qlist",qlist)
-      console.log(socket.rooms)
+      // console.log("qlist",qlist)
+      // console.log(socket.rooms)
       io.sockets.emit("redirect",user_array)
-        
       user_array = [];
       }
       clientNo++;
@@ -226,37 +212,23 @@ app.get("/logout",(req,res) => {
     
 })
 
-function quizGiver(user){
-  for(let i = 0; i < questionObject.length; i++){
-    if(questionObject[i].user1 === user || questionObject[i].user2 === user){
-      console.log(i,"found")
-      return i
-      break
-    }
-    console.log("not exist")
-  }
-}
 
 app.get("/quiz/:id/:user/:n",requireAuth,async (req,res) => {
   const para_user = await req.params.user;
   const para_id = await req.params.id;
   const n = await parseInt(req.params.n)
-  console.log(questionObject[0].queslist)
-  console.log(questionObject[0].queslist[0])
-  // res.redirect(`/quiz/${para_id}/${para_user}/${n}`)
-  
-  // for (let i = 0; i < questionObject.length; i++) {
-  //   if (questionObject[i].usr1 === para_user || questionObject[i].usr2 === para_user) {
-  //     // console.log(i,"found");
-  //     setindex = i;
-  //     break
-  //   }
-  // }
-  // var js = JSON.stringify(questionObject[setindex].queslist[n]._id).substr(1, 24);
-    // var js2 = JSON.stringify(questionObject[setindex].queslist[n+1]._id).substr(1, 24);
-    // var js3 = questionObject[setindex].queslist[n]
-  
-  await res.render("quiz", { question: qlist[0], nextquesid: qlist[0]._id,ides:qlist[0]._id ,nn: 1})
+  // console.log(questionObject[0].queslist)
+  // console.log(questionObject[0].queslist[0])
+  var index0 = 0;
+  for(let i = 0; i < questionObject.length; i++){
+      if(questionObject[i].usr1 === para_user || questionObject[i].usr2 === para_user){
+      // console.log(i,"found");
+        index0 = i;
+        break
+      }
+      // console.log("not exist")
+    }
+  await res.render("quiz", { question: questionObject[index0].queslist[0], nextquesid: JSON.stringify(questionObject[index0].queslist[n]._id).substr(1, 24),ides:JSON.stringify(questionObject[index0].queslist[n]._id).substr(1, 24) ,nn: 1})
 
 })
 
@@ -276,9 +248,9 @@ app.post("/quiz/:id/:user/:n",async (req,res) => {
         setindex = i;
         break
       }
-      console.log("not exist")
+      // console.log("not exist")
     }
-    console.log("*****",para_user,para_id,"n=",n,setindex);
+    // console.log("*****",para_user,para_id,"n=",n,setindex);
 
     const useranswer = req.body;
     if(answerlist[para_user]){
@@ -293,25 +265,27 @@ app.post("/quiz/:id/:user/:n",async (req,res) => {
     var js3 = questionObject[setindex].queslist[n]
     }
     
-    console.log("*****",para_user,para_id,"n=",n,setindex);
-    console.log("@@@@@",js2)
-    console.log(answerlist)
-    console.log(js3)
-    
+    // console.log("*****",para_user,para_id,"n=",n,setindex);
+    // console.log("@@@@@",js2)
+    // console.log(answerlist)
+    // console.log(js3)
+    //console.log("answerlist")
+    //console.log(answerlist)
+    //console.log("answerlist")
     if (answerlist[para_user].length === 5) {
       questionObject[setindex][para_user] = [answerlist[para_user]];
     
       var fscr = 0;
       for(let i = 0;i<5;i++){
         if(questionObject[setindex].answer[i] === questionObject[setindex][para_user][0][i]){
-          console.log(questionObject[setindex][para_user][0][i],"'",questionObject[setindex].answer[i])
+          // console.log(questionObject[setindex][para_user][0][i],"'",questionObject[setindex].answer[i])
           fscr += 10
         }
       }
       
       questionObject[setindex][para_user].push(fscr)
       questionObject[setindex].submit += 1;
-      console.log(answerlist[para_user])
+      // console.log(answerlist[para_user])
       
       if(questionObject[setindex].submit === 1){
         res.redirect(`/quiz/wait/${para_user}`)
@@ -321,8 +295,7 @@ app.post("/quiz/:id/:user/:n",async (req,res) => {
       
       qno = 0;
       qlist = [];
-      console.log(questionObject)
-      res.redirect("/start")
+  
     }else{
       await res.render("quiz", { question:js3, nextquesid: js,ides: js2, nn: n+1})
     }
@@ -348,7 +321,9 @@ app.get('/quiz/score/:user',(req,res) => {
   var user_sc2 = "";
   var win = "";
   var index_sc = 0;
+  var endquestionObj;
   for(let i=0; i<questionObject.length; i++){
+    // console.log(questionObject)
     if(questionObject[i][user]){
         if(questionObject[i].usr1 === user){
           user_sc1 = questionObject[i].usr1;
@@ -358,17 +333,27 @@ app.get('/quiz/score/:user',(req,res) => {
           user_sc2 = questionObject[i].usr1;
         }
       index_sc = i;
+      break
     }
-    break
   }
+  
+  console.log("============")
+  console.log(index_sc,user_sc1,user_sc2)
+  console.log(questionObject);
+  console.log("============")
   if(questionObject[index_sc][user_sc1][1] > questionObject[index_sc][user_sc2][1]){
     win = user_sc1;
   }else{
     win = user_sc2;
   }
-  
-  console.log(questionObject[index_sc][user_sc1],"---------->>>>>")
-  res.render('score',{user1: [user_sc1,questionObject[index_sc][user_sc1][1]], user2: [user_sc2,questionObject[index_sc][user_sc2][1]],
+  endquestionObj = questionObject[index_sc]
+  //
+  if(questionObject[index_sc].submit === 2){
+    questionObject = questionObject.splice(index_sc,1)
+  }
+  // console.log("=>>>>>>",endquestionObj,"<=======")
+ 
+  res.render('score',{user1: [user_sc1,endquestionObj[user_sc1][1]], user2: [user_sc2,endquestionObj[user_sc2][1]],
     winner: win
   })
 })
